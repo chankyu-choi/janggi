@@ -1,5 +1,5 @@
-#ifndef H_JANGI
-#define H_JANGI
+#ifndef H_JANGGI
+#define H_JANGGI
 
 #include <iostream>
 using namespace std;
@@ -17,9 +17,9 @@ enum StageID {
 const int     kStageWidth = 9;
 const int     kStageHeight = 10;
 
-class Jangi{
+class Janggi{
 public:
-  Jangi();
+  Janggi();
 
 public:
   void          SetStage(StageID stage_id = MSSMSMSM);

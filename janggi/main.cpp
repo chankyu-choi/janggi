@@ -2,14 +2,14 @@
 #include <string>
 using namespace std;   
 
-#include "jangi.h"
+#include "janggi.h"
 
 bool string2ints(string in, int& cx, int& cy, int& nx, int& ny);
 
 void main()
 {
-  Jangi jangi;
-  jangi.Show();
+  Janggi Janggi;
+  Janggi.Show();
 
   int cx, cy, nx, ny;
   string inputs;
@@ -17,8 +17,8 @@ void main()
     cout << "Act : ";
     getline(cin, inputs);
     
-    if (string2ints(inputs, cx, cy, nx, ny) && jangi.Action(cx, cy, nx, ny))
-      jangi.Show();
+    if (string2ints(inputs, cx, cy, nx, ny) && Janggi.Action(cx, cy, nx, ny))
+      Janggi.Show();
     else
       cout << "Can't move" << endl;
   } while (1);

@@ -1,11 +1,11 @@
-#include "jangi.h"
+#include "Janggi.h"
 
 const char* UnitIDChar[IDSize] = {
   "HG", "HC", "HM", "HS", "HP", "Hs", "HJ",
   "CG", "CC", "CM", "CS", "CP", "Cs", "CJ",
 };
 
-Jangi::Jangi() {
+Janggi::Janggi() {
   for (int y = 0; y < kStageHeight; y++) {
     for (int x = 0; x < kStageWidth; x++) {
       stage_[y][x] = -1;
@@ -15,14 +15,14 @@ Jangi::Jangi() {
   SetStage(MSSMSMSM);
 }
 
-bool Jangi::CheckValidPos(int x, int y)
+bool Janggi::CheckValidPos(int x, int y)
 {
   if (x < 0 || x >= kStageWidth || y < 0 || y >= kStageHeight)
     return false;
   return true;
 }
 
-void Jangi::SetStage(StageID stage_id)
+void Janggi::SetStage(StageID stage_id)
 {
   switch (stage_id) {
   case MSSMSMSM:
@@ -43,7 +43,7 @@ void Jangi::SetStage(StageID stage_id)
   }
 }
 
-const char* Jangi::GetUnitID(int x, int y)
+const char* Janggi::GetUnitID(int x, int y)
 {
   if (!CheckValidPos(x, y))
     return NULL;
@@ -51,35 +51,11 @@ const char* Jangi::GetUnitID(int x, int y)
   if (stage_[y][x] >= 0)
     return UnitIDChar[stage_[y][x]];
   else {
-    if (y == 0) {
-      if (x == 0)
-        return "¦£";
-      else if (x == kStageWidth - 1)
-        return "¦¤";
-      else
-        return "¦¨";
-    }
-    else if (y == kStageHeight - 1) {
-      if (x == 0)
-        return "¦¦";
-      else if (x == kStageWidth - 1)
-        return "¦¥";
-      else
-        return "¦ª";
-    }
-    else if (x == 0) {
-      return "¦§";
-    }
-    else if (x == kStageWidth - 1) {
-      return "¦©";
-    }
-    else {
-      return "¦«";
-    }
+    return "--";
   }
 }
 
-void Jangi::Show()
+void Janggi::Show()
 {
   cout << "   ";
   for (int x = 0; x < kStageWidth; x++)
@@ -91,12 +67,12 @@ void Jangi::Show()
     for (int x = 0; x < kStageWidth; x++) {
       cout << GetUnitID(x, y);
       if (x != kStageWidth - 1)
-        cout << "¦¡";
+        cout << "  ";
     }
     if (y != kStageHeight - 1) {
       cout << endl << "  ";
       for (int x = 0; x < kStageWidth; x++) {
-        cout << "¦¢  ";
+        cout << "    ";
       }
       cout << endl;
     }
@@ -104,7 +80,7 @@ void Jangi::Show()
   cout << endl;
 }
 
-bool Jangi::Action(int cx, int cy, int nx, int ny)
+bool Janggi::Action(int cx, int cy, int nx, int ny)
 {
   if (!CheckValidPos(cx, cy) || !CheckValidPos(nx, ny) || stage_[cy][cx] < 0)
     return false;
