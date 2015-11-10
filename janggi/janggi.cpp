@@ -15,9 +15,9 @@ Janggi::Janggi() {
   SetStage(MSSMSMSM);
 }
 
-bool Janggi::CheckValidPos(int x, int y)
+bool Janggi::CheckValidPos(Pos pos)
 {
-  if (x < 0 || x >= kStageWidth || y < 0 || y >= kStageHeight)
+  if (pos.x < 0 || pos.x >= kStageWidth || pos.y < 0 || pos.y >= kStageHeight)
     return false;
   return true;
 }
@@ -43,13 +43,13 @@ void Janggi::SetStage(StageID stage_id)
   }
 }
 
-const char* Janggi::GetUnitID(int x, int y)
+const char* Janggi::GetUnitID(Pos pos)
 {
-  if (!CheckValidPos(x, y))
+  if (!CheckValidPos(pos))
     return NULL;
 
-  if (stage_[y][x] >= 0)
-    return UnitIDChar[stage_[y][x]];
+  if (stage_[pos.y][pos.x] >= 0)
+    return UnitIDChar[stage_[pos.y][pos.x]];
   else {
     return "--";
   }
@@ -65,7 +65,7 @@ void Janggi::Show()
   for (int y = 0; y < kStageHeight; y++) {
     cout << y << " ";
     for (int x = 0; x < kStageWidth; x++) {
-      cout << GetUnitID(x, y);
+      cout << GetUnitID(Pos(x, y));
       if (x != kStageWidth - 1)
         cout << "  ";
     }
@@ -77,14 +77,14 @@ void Janggi::Show()
       cout << endl;
     }
   }
-  cout << endl;
+  cout << endl << "====================================" << endl;
 }
 
-bool Janggi::Action(int cx, int cy, int nx, int ny)
+bool Janggi::Action(Pos current, Pos next)
 {
-  if (!CheckValidPos(cx, cy) || !CheckValidPos(nx, ny) || stage_[cy][cx] < 0)
+  if (!CheckValidPos(current) || !CheckValidPos(next) || stage_[current.y][current.x] < 0)
     return false;
   
-  stage_[ny][nx] = stage_[cy][cx];
-  stage_[cy][cx] = -1;
+  stage_[next.y][next.x] = stage_[current.y][current.x];
+  stage_[current.y][current.x] = -1;
 }

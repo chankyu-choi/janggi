@@ -10,6 +10,11 @@ enum UnitID {
   IDSize,
 };
 
+struct Pos{
+  Pos(int x, int y) { this->x = x; this->y=y; }
+  int x, y;
+};
+
 enum StageID {
   MSSMSMSM,
 };
@@ -23,10 +28,10 @@ public:
 
 public:
   void          SetStage(StageID stage_id = MSSMSMSM);
-  bool          CheckValidPos(int x, int y);
-  const char*   GetUnitID(int x, int y);
+  bool          CheckValidPos(Pos pos);
+  const char*   GetUnitID(Pos pos);
   void          Show();  
-  bool          Action(int cx, int cy, int nx, int ny);
+  bool          Action(Pos current, Pos next);
 
 private:
   
