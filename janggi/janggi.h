@@ -2,7 +2,10 @@
 #define H_JANGGI
 
 #include <iostream>
+#include <vector>
 using namespace std;
+
+#define DEBUG_MODE 1
 
 enum UnitID {
   HG, HC, HM, HS, HP, Hs, HJ,
@@ -11,7 +14,9 @@ enum UnitID {
 };
 
 struct Pos{
+  Pos() { }
   Pos(int x, int y) { this->x = x; this->y=y; }
+  float Distance(int from_x, int from_y);
   int x, y;
 };
 
@@ -32,6 +37,7 @@ public:
   const char*   GetUnitID(Pos pos);
   void          Show();  
   bool          Action(Pos current, Pos next);
+  void          MovableCanditates(Pos current, vector<Pos>& candidates);
 
 private:
   
