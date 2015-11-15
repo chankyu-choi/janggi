@@ -5,7 +5,7 @@
 #include <vector>
 using namespace std;
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 enum UnitID {
   HG, HC, HM, HS, HP, Hs, HJ,
@@ -38,10 +38,16 @@ public:
   void          Show();  
   bool          Action(Pos current, Pos next);
   void          MovableCanditates(Pos current, vector<Pos>& candidates);
+  void          MoveGung(Pos current, vector<Pos>& candidates);
+  void          MoveCha(Pos current, vector<Pos>& candidates);
+  void          MovePo(Pos current, vector<Pos>& candidates);
+  void          MoveMa(Pos current, vector<Pos>& candidates);
+  void          MoveSang(Pos current, vector<Pos>& candidates);
+  void          MoveJol(Pos current, vector<Pos>& candidates);
 
-private:
-  
+private: 
   int           stage_[kStageHeight][kStageWidth];    
+  bool          standard_position_;
 };
 
 #endif

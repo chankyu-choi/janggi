@@ -12,13 +12,13 @@ void main()
   Janggi Janggi;
   Janggi.Show();
 
-  Pos currnet, next;
+  Pos current, next;
   string inputs;
   do {
     cout << "Act : ";
     getline(cin, inputs);
     
-    if (string2ints(inputs, currnet, next) && Janggi.Action(currnet, next))
+    if (string2ints(inputs, current, next) && Janggi.Action(current, next))
       Janggi.Show();
     else
       cout << "Can't move" << endl;
