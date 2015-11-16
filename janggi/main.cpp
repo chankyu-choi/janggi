@@ -7,7 +7,7 @@ using namespace std;
 bool string2ints(string in, Pos& current, Pos& next);
 #define ASCIIBASE 48
 
-void main()
+int main()
 {
   Janggi Janggi;
   Janggi.Show();
@@ -23,6 +23,8 @@ void main()
     else
       cout << "Can't move" << endl;
   } while (1);
+
+  return 1;
 }
 
 bool string2ints(string in, Pos& current, Pos& next)

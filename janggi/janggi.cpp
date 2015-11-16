@@ -1,4 +1,5 @@
 #include "Janggi.h"
+#include <cmath>
 
 const char* UnitIDChar[IDSize] = {
   "HG", "HC", "HM", "HS", "HP", "Hs", "HJ",
@@ -112,7 +113,9 @@ bool Janggi::Action(Pos current, Pos next)
   }
   if (!movable) {
     cout << "Can't move" << endl;
+      return false;
   }
+  return true;
 }
 
 void Janggi::MovableCanditates(Pos pos, vector<Pos>& candidates)
@@ -519,40 +522,40 @@ void Janggi::MoveMa(Pos pos, vector<Pos>& candidates)
       candidates.push_back(next);
     // up-right
     next = Pos(pos.x + 1, pos.y - 2);
-    if (stage_[pos.y - 1][pos.x] < 0 && next.x < kStageWidth && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y - 1][pos.x] < 0 && next.x < kStageWidth && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }  
   if (pos.x < kStageWidth - 2) {
     // right-up
     next = Pos(pos.x + 2, pos.y + 1);    
-    if (stage_[pos.y][pos.x + 1] < 0 && next.y <kStageHeight && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y][pos.x + 1] < 0 && next.y <kStageHeight && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // right-down
     next = Pos(pos.x + 2, pos.y - 1);
-    if (stage_[pos.y][pos.x + 1] < 0 && next.y >= 0 && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y][pos.x + 1] < 0 && next.y >= 0 && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }  
   if (pos.y < kStageHeight - 2) {
     // down-left
     next = Pos(pos.x - 1, pos.y + 2);
-    if (stage_[pos.y + 1][pos.x] < 0 && next.x >= 0 && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y + 1][pos.x] < 0 && next.x >= 0 && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // down-right
     next = Pos(pos.x + 1, pos.y + 2);
-    if (stage_[pos.y + 1][pos.x] < 0 && next.x < kStageWidth && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y + 1][pos.x] < 0 && next.x < kStageWidth && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }  
   if (pos.x > 1) {
     // left-up
     next = Pos(pos.x - 2, pos.y + 1);
-    if (stage_[pos.y][pos.x - 1] < 0 && next.y <kStageHeight && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y][pos.x - 1] < 0 && next.y <kStageHeight && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // left-down
     next = Pos(pos.x - 2, pos.y - 1);
-    if (stage_[pos.y][pos.x - 1] < 0 && next.y >= 0 && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+    if (stage_[pos.y][pos.x - 1] < 0 && next.y >= 0 && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }  
 }
@@ -565,26 +568,26 @@ void Janggi::MoveSang(Pos pos, vector<Pos>& candidates)
     // up-left      
     next = Pos(pos.x - 2, pos.y - 3);
     if (pos.x > 1 && stage_[pos.y - 1][pos.x]<0 && stage_[pos.y - 2][pos.x - 1] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // up-right    
     next = Pos(pos.x + 2, pos.y - 3);
     if (pos.x < kStageWidth - 2  && stage_[pos.y - 1][pos.x]<0 && stage_[pos.y - 2][pos.x + 1] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }
   if (pos.x < kStageWidth - 3) {
     // right-up
     next = Pos(pos.x + 3, pos.y - 2);
     if (pos.y > 1 && stage_[pos.y][pos.x + 1]<0 && stage_[pos.y - 1][pos.x + 2] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // right-down
     next = Pos(pos.x + 3, pos.y + 2);
     if (pos.y < kStageHeight - 2 && stage_[pos.y][pos.x + 1]<0 && stage_[pos.y + 1][pos.x + 2] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
   }
@@ -592,26 +595,26 @@ void Janggi::MoveSang(Pos pos, vector<Pos>& candidates)
     // down-left
     next = Pos(pos.x - 2, pos.y + 3);    
     if (pos.x > 1 && stage_[pos.y + 1][pos.x]<0 && stage_[pos.y + 2][pos.x - 1] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // down-right
     next = Pos(pos.x + 2, pos.y + 3);    
     if (pos.x < kStageWidth - 2 && stage_[pos.y + 1][pos.x]<0 && stage_[pos.y + 2][pos.x + 1] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }
   if (pos.x > 2) {
     // left-up
     next = Pos(pos.x - 3, pos.y - 2);
     if (pos.y > 1 && stage_[pos.y][pos.x - 1]<0 && stage_[pos.y - 1][pos.x - 2] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
 
     // left-down
     next = Pos(pos.x - 3, pos.y + 2);
     if (pos.y < kStageHeight - 2 && stage_[pos.y][pos.x - 1]<0 && stage_[pos.y + 1][pos.x - 2] < 0
-      && ((curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
+      && (stage_[next.y][next.x] < 0 || (curr_id <= 6 && stage_[next.y][next.x]>6) || (curr_id>6 && stage_[next.y][next.x] <= 6)))
       candidates.push_back(next);
   }
 }
@@ -627,7 +630,7 @@ void Janggi::MoveJol(Pos pos, vector<Pos>& candidates)
       for (int dx = -1; dx <= 1; dx++) {
         nx = pos.x + dx;
         ny = pos.y + dy;
-        if (nx >= 0 && nx < kStageWidth && ny >= 0 && ny < kStageHeight && ((curr_id <= 6 && stage_[ny][nx] > 6) || (curr_id > 6 && stage_[ny][nx] <= 6))) {
+        if (nx >= 0 && nx < kStageWidth && ny >= 0 && ny < kStageHeight && (stage_[ny][nx] < 0 || (curr_id <= 6 && stage_[ny][nx] > 6) || (curr_id > 6 && stage_[ny][nx] <= 6))) {
           if ((pos.x == 3 && pos.y == 7 && nx == 4 && ny == 8) ||
             (pos.x == 5 && pos.y == 7 && nx == 4 && ny == 8) ||
             (pos.x == 4 && pos.y == 8 && nx == 3 && ny == 9) ||
@@ -644,7 +647,7 @@ void Janggi::MoveJol(Pos pos, vector<Pos>& candidates)
       for (int dx = -1; dx <= 1; dx++) {
         nx = pos.x + dx;
         ny = pos.y + dy;
-        if (nx >= 0 && nx < kStageWidth && ny >= 0 && ny < kStageHeight && ((curr_id <= 6 && stage_[ny][nx] > 6) || (curr_id > 6 && stage_[ny][nx] <= 6))) {
+        if (nx >= 0 && nx < kStageWidth && ny >= 0 && ny < kStageHeight && (stage_[ny][nx] < 0 || (curr_id <= 6 && stage_[ny][nx] > 6) || (curr_id > 6 && stage_[ny][nx] <= 6))) {
           if ((pos.x == 3 && pos.y == 2 && nx == 4 && ny == 1) ||
             (pos.x == 5 && pos.y == 2 && nx == 4 && ny == 1) ||
             (pos.x == 4 && pos.y == 1 && nx == 3 && ny == 0) ||
