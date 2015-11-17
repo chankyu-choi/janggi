@@ -8,7 +8,9 @@ const char* UnitIDChar[IDSize] = {
 
 float Pos::Distance(int x, int y)
 {
-  return sqrt(pow(this->x - x, 2) + pow(this->y - y, 2));
+  int diff_x = this->x - x;
+  int diff_y = this->y - y;
+  return sqrt((float)(diff_x*diff_x + diff_y*diff_y));
 }
 
 Janggi::Janggi() {
@@ -102,7 +104,7 @@ bool Janggi::Action(Pos current, Pos next)
     
   bool movable = false;
   if (candidates.size() != 0) {
-    for (int i = 0; i < candidates.size(); i++) {
+    for (unsigned int i = 0; i < candidates.size(); i++) {
       if (candidates[i].x == next.x && candidates[i].y == next.y)
         movable = true;
     }
