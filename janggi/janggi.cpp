@@ -637,3 +637,26 @@ void Janggi::MoveJol(Pos pos, vector<Pos>& candidates)
     }
   }
 }
+
+//return cho's score relative to han's score
+//if return value is 0, the score is tied
+//if return value is positive, cho is ahead of han
+//if return value is negative, han is ahead of cho
+int Janggi::Evaluate()
+{
+  int score_cho = 0, score_han = 0;
+
+  for (int y=0 ; y<kStageHeight ; y++) {    
+    for (int x=0 ; x<kStageWidth ; x++) {
+      int val = stage_[y][x];
+      if (val >= 0) {
+        if (val <= 6) 
+          score_han += POINT[val];
+        else
+          score_cho += POINT[val-7];
+      }
+    }
+  }
+
+  return score_cho - score_han;
+}
