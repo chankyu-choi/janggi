@@ -30,8 +30,6 @@ const int     kStageHeight = 10;
 class Janggi{
 public:
   Janggi();
-
-public:
   void          SetStage(StageID stage_id = MSSMSMSM);
   bool          CheckValidPos(Pos pos);
   const char*   GetUnitID(Pos pos);

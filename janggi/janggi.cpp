@@ -194,12 +194,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[y][pos.x] > 6) {
-            candidates.push_back(Pos(pos.x, y));
-            break;
+            candidates.push_back(Pos(pos.x, y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -209,11 +206,8 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         else {
           if (stage_[y][pos.x] <= 6) {
             candidates.push_back(Pos(pos.x, y));
-            break;
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -227,12 +221,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[y][pos.x] > 6) {
-            candidates.push_back(Pos(pos.x, y));
-            break;
+            candidates.push_back(Pos(pos.x, y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -241,12 +232,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[y][pos.x] <= 6) {
-            candidates.push_back(Pos(pos.x, y));
-            break;
+            candidates.push_back(Pos(pos.x, y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -260,12 +248,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] > 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -274,12 +259,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] <= 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -293,12 +275,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] > 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -307,12 +286,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] <= 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
