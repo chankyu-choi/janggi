@@ -8,7 +8,9 @@ const char* UnitIDChar[IDSize] = {
 
 float Pos::Distance(int x, int y)
 {
-  return sqrt(pow(this->x - x, 2) + pow(this->y - y, 2));
+  int diff_x = this->x - x;
+  int diff_y = this->y - y;
+  return sqrt((float)(diff_x*diff_x + diff_y*diff_y));
 }
 
 Janggi::Janggi() {
@@ -102,7 +104,7 @@ bool Janggi::Action(Pos current, Pos next)
     
   bool movable = false;
   if (candidates.size() != 0) {
-    for (int i = 0; i < candidates.size(); i++) {
+    for (unsigned int i = 0; i < candidates.size(); i++) {
       if (candidates[i].x == next.x && candidates[i].y == next.y)
         movable = true;
     }
@@ -191,12 +193,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[y][pos.x] > 6) {
-            candidates.push_back(Pos(pos.x, y));
-            break;
+            candidates.push_back(Pos(pos.x, y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -206,11 +205,8 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         else {
           if (stage_[y][pos.x] <= 6) {
             candidates.push_back(Pos(pos.x, y));
-            break;
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -224,12 +220,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[y][pos.x] > 6) {
-            candidates.push_back(Pos(pos.x, y));
-            break;
+            candidates.push_back(Pos(pos.x, y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -238,12 +231,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[y][pos.x] <= 6) {
-            candidates.push_back(Pos(pos.x, y));
-            break;
+            candidates.push_back(Pos(pos.x, y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -257,12 +247,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] > 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -271,12 +258,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] <= 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -290,12 +274,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] > 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
       else {
@@ -304,12 +285,9 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
         }
         else {
           if (stage_[pos.y][x] <= 6) {
-            candidates.push_back(Pos(x, pos.y));
-            break;
+            candidates.push_back(Pos(x, pos.y));            
           }
-          else {
-            break;
-          }
+          break;
         }
       }
     }
@@ -659,4 +637,27 @@ void Janggi::MoveJol(Pos pos, vector<Pos>& candidates)
       }
     }
   }
+}
+
+//return cho's score relative to han's score
+//if return value is 0, the score is tied
+//if return value is positive, cho is ahead of han
+//if return value is negative, han is ahead of cho
+int Janggi::Evaluate()
+{
+  int score_cho = 0, score_han = 0;
+
+  for (int y=0 ; y<kStageHeight ; y++) {    
+    for (int x=0 ; x<kStageWidth ; x++) {
+      int val = stage_[y][x];
+      if (val >= 0) {
+        if (val <= 6) 
+          score_han += POINT[val];
+        else
+          score_cho += POINT[val-7];
+      }
+    }
+  }
+
+  return score_cho - score_han;
 }

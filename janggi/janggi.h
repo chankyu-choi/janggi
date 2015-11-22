@@ -13,6 +13,10 @@ enum UnitID {
   IDSize,
 };
 
+const int POINT[IDSize/2] = {
+  99999, 13, 5, 3, 7, 3, 2
+};
+
 struct Pos{
   Pos() { }
   Pos(int x, int y) { this->x = x; this->y=y; }
@@ -30,8 +34,6 @@ const int     kStageHeight = 10;
 class Janggi{
 public:
   Janggi();
-
-public:
   void          SetStage(StageID stage_id = MSSMSMSM);
   bool          CheckValidPos(Pos pos);
   const char*   GetUnitID(Pos pos);
@@ -44,6 +46,7 @@ public:
   void          MoveMa(Pos current, vector<Pos>& candidates);
   void          MoveSang(Pos current, vector<Pos>& candidates);
   void          MoveJol(Pos current, vector<Pos>& candidates);
+  int           Evaluate();
 
 private: 
   int           stage_[kStageHeight][kStageWidth];    
