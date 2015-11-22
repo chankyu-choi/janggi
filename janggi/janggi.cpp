@@ -111,10 +111,9 @@ bool Janggi::Action(Pos current, Pos next)
       stage_[current.y][current.x] = -1;
     }
   }
-  if (!movable) {
-    cout << "Can't move" << endl;
-      return false;
-  }
+  if (!movable) 
+      return false;  
+
   return true;
 }
 
@@ -317,34 +316,36 @@ void Janggi::MoveCha(Pos pos, vector<Pos>& candidates)
   }
 
   // diagonal
-  int nx, ny;
-  for (int dy = -1; dy <= 1; dy++) {
-    for (int dx = -1; dx <= 1; dx++) {
-      nx = pos.x + dx;
-      ny = pos.y + dy;
-      if ((pos.x == 3 && (pos.y == 1 || pos.y == 8)) ||
-        (pos.x == 4 && (pos.y == 0 || pos.y == 2 || pos.y == 7 || pos.y == 9)) ||
-        (pos.x == 5 && (pos.y == 1 || pos.y == 8))) {
-        // movable to only up, right, left, down side
-        if (pos.Distance(nx, ny) > 1)
-          continue;
-      }
-      if (nx >= 3 && nx <= 5
-        && ((ny >= 0 && ny <= 2) || (ny >= 7 && ny <= 9))) {
-        if (curr_id <= 6) {
-          if (stage_[ny][nx]<0 || stage_[ny][nx]>6) {
-            candidates.push_back(Pos(nx, ny));
-          }
+  if (pos.x >= 3 && pos.x <= 5
+    && ((pos.y >= 0 && pos.y <= 2) || (pos.y >= 7 && pos.y <= 9))) {
+    int nx, ny;
+    for (int dy = -1; dy <= 1; dy++) {
+      for (int dx = -1; dx <= 1; dx++) {
+        nx = pos.x + dx;
+        ny = pos.y + dy;
+        if ((pos.x == 3 && (pos.y == 1 || pos.y == 8)) ||
+          (pos.x == 4 && (pos.y == 0 || pos.y == 2 || pos.y == 7 || pos.y == 9)) ||
+          (pos.x == 5 && (pos.y == 1 || pos.y == 8))) {
+          // movable to only up, right, left, down side
+          if (pos.Distance(nx, ny) > 1)
+            continue;
         }
-        else {
-          if (stage_[ny][nx]<0 || stage_[ny][nx] <= 6) {
-            candidates.push_back(Pos(nx, ny));
+        if (nx >= 3 && nx <= 5
+          && ((ny >= 0 && ny <= 2) || (ny >= 7 && ny <= 9))) {
+          if (curr_id <= 6) {
+            if (stage_[ny][nx]<0 || stage_[ny][nx]>6) {
+              candidates.push_back(Pos(nx, ny));
+            }
+          }
+          else {
+            if (stage_[ny][nx]<0 || stage_[ny][nx] <= 6) {
+              candidates.push_back(Pos(nx, ny));
+            }
           }
         }
       }
     }
   }
-
 }
 
 void Janggi::MovePo(Pos pos, vector<Pos>& candidates)
