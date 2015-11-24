@@ -3,33 +3,12 @@
 
 #include <iostream>
 #include <vector>
-using namespace std;
+
+#include "defines.h"
 
 #define DEBUG_MODE 0
 
-enum UnitID {
-  HG, HC, HM, HS, HP, Hs, HJ,
-  CG, CC, CM, CS, CP, Cs, CJ,
-  IDSize,
-};
-
-const int POINT[IDSize/2] = {
-  99999, 13, 5, 3, 7, 3, 2
-};
-
-struct Pos{
-  Pos() { }
-  Pos(int x, int y) { this->x = x; this->y=y; }
-  float Distance(int from_x, int from_y);
-  int x, y;
-};
-
-enum StageID {
-  MSSMSMSM,
-};
-
-const int     kStageWidth = 9;
-const int     kStageHeight = 10;
+class Node;
 
 class Janggi{
 public:
@@ -37,20 +16,22 @@ public:
   void          SetStage(StageID stage_id = MSSMSMSM);
   bool          CheckValidPos(Pos pos);
   const char*   GetUnitID(Pos pos);
-  void          Show();  
-  bool          Action(Pos current, Pos next);
-  void          MovableCanditates(Pos current, vector<Pos>& candidates);
-  void          MoveGung(Pos current, vector<Pos>& candidates);
-  void          MoveCha(Pos current, vector<Pos>& candidates);
-  void          MovePo(Pos current, vector<Pos>& candidates);
-  void          MoveMa(Pos current, vector<Pos>& candidates);
-  void          MoveSang(Pos current, vector<Pos>& candidates);
-  void          MoveJol(Pos current, vector<Pos>& candidates);
-  int           Evaluate();
-
+  void          Show(Pos prev);  
+  bool          PerformAction(Action action);
+  static void   MovableCanditates(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static void   MoveGung(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static void   MoveCha(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static void   MovePo(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static void   MoveMa(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static void   MoveSang(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static void   MoveJol(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
+  static int    Evaluate(int stage[kStageHeight][kStageWidth]);
+  Action        CalculateNextAction(Turn turn);
+  static void   MakeNextStage(Action action, int stage[kStageHeight][kStageWidth]);
+  
 private: 
-  int           stage_[kStageHeight][kStageWidth];    
-  bool          standard_position_;
+  int           stage_[kStageHeight][kStageWidth];      
+  //bool          standard_position_; //prototyping 용으로는 굳이 이것까지 고려할 필요는 없을 것 같고, code짜는데 불편해서 일단 주석처리
 };
 
 #endif
