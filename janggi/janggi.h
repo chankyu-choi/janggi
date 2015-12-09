@@ -26,7 +26,7 @@ public:
   static void   MoveSang(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
   static void   MoveJol(int stage[kStageHeight][kStageWidth], Pos current, vector<Pos>& candidates);
   static int    Evaluate(int stage[kStageHeight][kStageWidth]);
-  Action        CalculateNextAction(Turn turn);
+  const Action  CalculateNextAction(Turn turn);
   static void   MakeNextStage(Action action, int stage[kStageHeight][kStageWidth]);
   
 private: 

@@ -3,7 +3,6 @@
 
 #include "janggi.h"
 #include "node.h"
-#include "graph.h"
 #include "defines.h"
 
 const char* UnitIDChar[IDSize] = {
@@ -673,14 +672,17 @@ int Janggi::Evaluate(int stage[kStageHeight][kStageWidth])
   return score_cho - score_han;
 }
 
-Action Janggi::CalculateNextAction(Turn turn)
+const Action Janggi::CalculateNextAction(Turn turn)
 {
   Action action;   
   
   //mini-max algorithm
   const int maxDepth = 3;  
-  Graph graph(stage_, turn, maxDepth);  
-  action = graph.MiniMax();
+  Node* currentNode = new Node(stage_, 0, Janggi::Evaluate(stage_), turn, Action());  
+  action = currentNode->CalculateMiniMaxAction(maxDepth, true);
+
+  delete currentNode; 
+  currentNode = NULL;
 
   return action;
 }

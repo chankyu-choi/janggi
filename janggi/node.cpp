@@ -16,12 +16,10 @@ Node::Node(int stage[kStageHeight][kStageWidth], int depth, int point, Turn turn
 
 Node::~Node()
 {
-  for (unsigned int i=0 ; i<childNodes_.size() ; i++) {
-    delete childNodes_[i];
-  }
+  ReleaseChildNodes();
 }
 
-void Node::MakeChildNodes(int maxDepth)
+void Node::MakeChildNodes(int maxDepth, bool recursive)
 { 
   if (depth_ >= maxDepth )
     return;
@@ -42,11 +40,20 @@ void Node::MakeChildNodes(int maxDepth)
                                 turn_ == TURN_CHO ? TURN_HAN : TURN_CHO, 
                                 Action(curr, candidates[i]));
           childNodes_.push_back(node);
-          node->MakeChildNodes(maxDepth);
+          if (recursive)
+            node->MakeChildNodes(maxDepth, true);
         }        
       }          
     }
   }  
+}
+
+void Node::ReleaseChildNodes()
+{
+  for (unsigned int i=0 ; i<childNodes_.size() ; i++) {
+    delete childNodes_[i];
+    childNodes_[i] = NULL;
+  }
 }
 
 bool Node::MovableUnitExists(int unitID )
@@ -61,14 +68,16 @@ bool Node::MovableUnitExists(int unitID )
   return false;  
 }
 
-const Action Node::CalculateMiniMaxAction(bool random)
+const Action Node::CalculateMiniMaxAction(int maxDepth, bool random)
 {
   int val;  
   vector<int> childScores;
+
+  MakeChildNodes(maxDepth, false);
   
   for (unsigned int i=0 ; i<childNodes_.size() ; i++)
-    childScores.push_back( childNodes_[i]->CalculateMiniMaxScore() );    
-
+    childScores.push_back( childNodes_[i]->CalculateMiniMaxScore(maxDepth) );    
+  
   if (turn_ == TURN_CHO)
     val = *max_element(childScores.begin(), childScores.end());
   else // TURN_HAN
@@ -85,16 +94,20 @@ const Action Node::CalculateMiniMaxAction(bool random)
   return childNodes_[index]->GetLastAction();
 }
 
-const int Node::CalculateMiniMaxScore()
+const int Node::CalculateMiniMaxScore(int maxDepth)
 {
+  MakeChildNodes(maxDepth, false);
+
   if ( childNodes_.empty() )     
     return point_;  
 
   vector<int> childScores;
 
   for (unsigned int i=0 ; i<childNodes_.size() ; i++)
-    childScores.push_back( childNodes_[i]->CalculateMiniMaxScore() );
-    
+    childScores.push_back( childNodes_[i]->CalculateMiniMaxScore(maxDepth) );
+
+  ReleaseChildNodes();
+ 
   if ( turn_ == TURN_CHO )
     return *max_element(childScores.begin(), childScores.end());
   else // TURN_HAN

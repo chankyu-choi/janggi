@@ -8,15 +8,16 @@
 class Node {
 public:
   Node(int stage[kStageHeight][kStageWidth], int depth, int point, Turn turn, Action lastAction);
-  ~Node();
-  void MakeChildNodes(int maxDepth);  
-  const Action CalculateMiniMaxAction(bool random);
+  ~Node();  
+  const Action CalculateMiniMaxAction(int maxDepth, bool random);
   const Action GetLastAction() { return lastAction_; }
 
 private: 
   Node();
   bool MovableUnitExists(int unitID );
-  const int CalculateMiniMaxScore();
+  void MakeChildNodes(int maxDepth, bool recursive);  
+  void ReleaseChildNodes();
+  const int CalculateMiniMaxScore(int maxDepth);
 
   int stage_[kStageHeight][kStageWidth];    
   int depth_;
