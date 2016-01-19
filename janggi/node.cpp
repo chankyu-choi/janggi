@@ -1,115 +1,53 @@
+//
+//  node.cpp
+//
+//  Created by pilhoon on 1/18/16.
+//
 
-#include <algorithm>
+#ifndef node_cpp
+#define node_cpp
 
-#include "defines.h"
+#include <vector>
+#include <cassert>
+#include <iostream>
+
 #include "node.h"
-#include "janggi.h"
+#include "board.h"
 
-Node::Node(int stage[kStageHeight][kStageWidth], int depth, int point, Turn turn, Action lastAction)
-{
-  memcpy(stage_, stage, sizeof(int) * kStageHeight * kStageWidth);
-  depth_ = depth;
-  point_ = point;
-  turn_ = turn;
-  lastAction_ = lastAction;
+Node::Node(const Node& n){
+    board = n.board;
+    action = n.action;
+    leafValue = n.leafValue;
+} // copy ctor
+
+Node::Node(Board b) {
+	board = b;
+};
+
+int Node::GetValue() {
+    return board.GetValue();
 }
 
-Node::~Node()
-{
-  ReleaseChildNodes();
+vector<Node> Node::GetChildren(Turn turn) {
+	vector<Node> children;
+	vector<Action> acts = board.GetPossibleActions(turn);
+	for(Action a: acts) {
+        Node n(board);
+        n.DoAction(a);
+		children.push_back(n);
+	}
+	return children;
 }
 
-void Node::MakeChildNodes(int maxDepth, bool recursive)
-{ 
-  if (depth_ >= maxDepth )
-    return;
-
-  for (int y=0 ; y<kStageHeight ; y++) {    
-    for (int x=0 ; x<kStageWidth ; x++) {      
-      if ( MovableUnitExists(stage_[y][x]) ) {
-        Pos curr(x,y);
-        vector<Pos> candidates;
-        Janggi::MovableCanditates(stage_, curr, candidates);                
-        for (unsigned int i = 0; i < candidates.size(); i++) {
-          int stage[kStageHeight][kStageWidth];
-          memcpy(stage, stage_, sizeof(int) * kStageHeight * kStageWidth);
-          Janggi::MakeNextStage(Action(curr, candidates[i]), stage);
-          Node* node = new Node(stage, 
-                                depth_+1, 
-                                Janggi::Evaluate(stage), 
-                                turn_ == TURN_CHO ? TURN_HAN : TURN_CHO, 
-                                Action(curr, candidates[i]));
-          childNodes_.push_back(node);
-          if (recursive)
-            node->MakeChildNodes(maxDepth, true);
-        }        
-      }          
-    }
-  }  
+void Node::Print() {
+    string s = board.ToString(action.prev);
+    std::cout << s;
 }
 
-void Node::ReleaseChildNodes()
-{
-  for (unsigned int i=0 ; i<childNodes_.size() ; i++) {
-    delete childNodes_[i];
-    childNodes_[i] = NULL;
-  }
+void Node::DoAction(Action a) {
+    action = a;
+    board.DoAction(a);
 }
 
-bool Node::MovableUnitExists(int unitID )
-{
-  if ( unitID < 0 )
-    return false;
+#endif /* node_cpp */
 
-  if ( ( turn_ == TURN_CHO && unitID > 6 )
-     || ( turn_ == TURN_HAN && unitID <= 6 ) )
-    return true;
-
-  return false;  
-}
-
-const Action Node::CalculateMiniMaxAction(int maxDepth, bool random)
-{
-  int val;  
-  vector<int> childScores;
-
-  MakeChildNodes(maxDepth, false);
-  
-  for (unsigned int i=0 ; i<childNodes_.size() ; i++)
-    childScores.push_back( childNodes_[i]->CalculateMiniMaxScore(maxDepth) );    
-  
-  if (turn_ == TURN_CHO)
-    val = *max_element(childScores.begin(), childScores.end());
-  else // TURN_HAN
-    val = *min_element(childScores.begin(), childScores.end());      
-  printf("val=%d\n",val);
-  vector<int> candIndices;
-  for (unsigned int i=0 ; i<childScores.size() ; i++) {
-    if (childScores[i] == val)
-      candIndices.push_back(i);
-  }
-
-  int index = candIndices[random ? (rand() % candIndices.size()) : 0];  
-
-  return childNodes_[index]->GetLastAction();
-}
-
-const int Node::CalculateMiniMaxScore(int maxDepth)
-{
-  MakeChildNodes(maxDepth, false);
-
-  if ( childNodes_.empty() )     
-    return point_;  
-
-  vector<int> childScores;
-
-  for (unsigned int i=0 ; i<childNodes_.size() ; i++)
-    childScores.push_back( childNodes_[i]->CalculateMiniMaxScore(maxDepth) );
-
-  ReleaseChildNodes();
- 
-  if ( turn_ == TURN_CHO )
-    return *max_element(childScores.begin(), childScores.end());
-  else // TURN_HAN
-    return *min_element(childScores.begin(), childScores.end());
-}

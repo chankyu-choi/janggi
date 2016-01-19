@@ -1,30 +1,33 @@
-#ifndef H_NODE
-#define H_NODE
+//
+//  node.h
+//
+//  Created by pilhoon on 1/18/16.
+//
+
+#ifndef node_h
+#define node_h
 
 #include <vector>
+#include "board.h"
 
-#include "defines.h"
-
-class Node {
+class Node{
 public:
-  Node(int stage[kStageHeight][kStageWidth], int depth, int point, Turn turn, Action lastAction);
-  ~Node();  
-  const Action CalculateMiniMaxAction(int maxDepth, bool random);
-  const Action GetLastAction() { return lastAction_; }
-
-private: 
-  Node();
-  bool MovableUnitExists(int unitID );
-  void MakeChildNodes(int maxDepth, bool recursive);  
-  void ReleaseChildNodes();
-  const int CalculateMiniMaxScore(int maxDepth);
-
-  int stage_[kStageHeight][kStageWidth];    
-  int depth_;
-  int point_; // minimax alg. 에서는 leaf node에서만 이 값이 계산될 필요가 있으나, 일단 모든 node에서 무조건 계산되도록 구현됨.
-  int turn_;
-  Action lastAction_;
-  vector<Node*> childNodes_;
+    Board board = Board();
+    Action action = Action(); // from before state, this action makes this board.
+    int leafValue;
+    
+    Node(){};
+    Node(const Node& n); // copy ctor
+    Node(Board b);
+    int GetValue();
+    Action GetAction() { return action; };
+    void SetAction(Action a) { action = a; };
+    vector<Node> GetChildren(Turn turn);
+    void Print();
+    void DoAction(Action a);
+    int GetLeafValue() { return leafValue; };
+    void SetLeafValue(int v) { leafValue = v; };
 };
 
-#endif
+#endif /* node_h */
+
