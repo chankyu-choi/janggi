@@ -9,6 +9,7 @@ class Janggi{ // almost utility class.
 public:
     const Action CalculateNextAction(Turn turn);
     Node Minmax(Node n, int depth, Turn turn);
+    Node AlphaBeta(Node node, int depth, int alpha, int beta, Turn turn);
     void Print();
     void PerformAction(Action a);
     

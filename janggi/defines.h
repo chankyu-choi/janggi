@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MINMAX_DEPTH 4
+#define MINMAX_DEPTH 6
 
 const int     kStageWidth = 9;
 const int     kStageHeight = 10;
