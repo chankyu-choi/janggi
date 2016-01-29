@@ -23,8 +23,13 @@ void Janggi::Print() {
 
 Node Janggi::Minmax(Node node, int depth, Turn turn) {
     if (depth==0 || //terminal node
-        fabs(node.GetValue()) >= (INT_MAX/2) // win or lose
-        ) {
+#if WIN32        
+      abs(node.GetValue()) >= (INT_MAX / 2) // win or lose
+      ) {
+#else
+      fabs(node.GetValue()) >= (INT_MAX / 2) // win or lose
+      ) {
+#endif
         node.SetLeafValue(node.GetValue());
         return node; //only one child. herself.
     }
@@ -76,8 +81,13 @@ Node Janggi::Minmax(Node node, int depth, Turn turn) {
 
 Node Janggi::AlphaBeta(Node node, int depth, int alpha, int beta, Turn turn) {
     if (depth==0 || //terminal node
+#if WIN32
+      abs(node.GetValue()) >= (INT_MAX / 2) // win or lose
+      ) {
+#else
         fabs(node.GetValue()) >= (INT_MAX/2) // win or lose
         ) {
+#endif
         node.SetLeafValue(node.GetValue());
         return node; //only one child. herself.
     }
