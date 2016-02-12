@@ -158,30 +158,54 @@ string Board::ToString(Pos sharpPosition) {  // TODO : -1 = magic number.
 
 vector<Pos> Board::GetMovableCanditates(Pos pos)
 {
+  vector<Pos> candidates;
     switch(stage[pos.y][pos.x]) {
         case HG:
         case CG:
         case Hs:
         case Cs:
-            return MoveGung(pos);
+          candidates = MoveGung(pos);
+          break;
         case HC:
         case CC:
-            return MoveCha(pos);
+          candidates = MoveCha(pos);
+          break;
         case HM:
         case CM:
-            return MoveMa(pos);
+          candidates = MoveMa(pos);
+          break;
         case HS:
         case CS:
-            return MoveSang(pos);
+          candidates = MoveSang(pos);
+          break;
         case HP:
         case CP:
-            return MovePo(pos);
+          candidates = MovePo(pos);
+          break;
         case HJ:
         case CJ:
-            return MoveJol(pos);
+          candidates = MoveJol(pos);
+          break;
         default:
             throw;
     }
+
+    // Remove redundancy
+    vector<Pos> results;
+    for (int i = 0; i < candidates.size(); i++) {
+      bool isUnique = true;
+      Pos candidate = candidates[i];
+      for (int s = 0; s < i - 1; s++) {
+        if (candidate.x == candidates[s].x && candidate.y == candidates[s].y) {
+          isUnique = false;
+          break;
+        }
+      }
+      if (isUnique)
+        results.push_back(candidate);
+    }
+
+    return results;
 }
 
 vector<Pos> Board::MoveGung(Pos pos)
