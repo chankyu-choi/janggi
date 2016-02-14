@@ -1,4 +1,6 @@
 #include <cmath>
+#include <stack>
+#include <iostream>
 #include <algorithm>
 #include <cassert>
 
@@ -12,13 +14,18 @@ const Action Janggi::CalculateNextAction(Turn turn)
 {
     //mini-max algorithm
     //Node s = Minmax(curNode, MINMAX_DEPTH, turn); // Minmax returns one of her children.
+    
     //alpha-beta prunning
-    Node s = AlphaBeta(curNode, MINMAX_DEPTH, INT_MIN, INT_MAX, turn);
+    //Node s = AlphaBeta(curNode, MINMAX_DEPTH, INT_MIN, INT_MAX, turn);
+    
+    //MCTS algorithm
+    Node s = MCTS(turn);
+    
     return s.GetAction();
 }
 
 void Janggi::Print() {
-    curNode.Print();
+  rootNode.Print();
 }
 
 Node Janggi::Minmax(Node node, int depth, Turn turn) {
@@ -145,8 +152,130 @@ Node Janggi::AlphaBeta(Node node, int depth, int alpha, int beta, Turn turn) {
     return best_node;
 }
 
+Node Janggi::MCTS(Turn turn)
+{
+  rootNode.Init();
+  cout << endl << endl;
+  for (int i = 0; i < MCTS_ITERATION; i++) {
+    Turn currTurn = turn;
+    std::stack<Node*> visited;
+    Node* pCur = &rootNode;
 
-void Janggi::PerformAction(Action a) {
-    curNode.DoAction(a);
+    std::stack<double> rewards;
+
+    int selected = 0;
+    double curReward = 0.0f;
+
+    // Selection
+    Node* first = NULL;
+    while (!pCur->isLeaf) {
+      selected = pCur->Selection(currTurn);
+      pCur = pCur->GetChild(selected);
+      if (first == NULL) {
+        first = pCur;
+      }
+      visited.push(pCur);
+      curReward = pCur->GetValue();      
+      //curReward = pCur->GetScore();
+      rewards.push(curReward);
+      currTurn = (currTurn == TURN_CHO ? TURN_HAN : TURN_CHO);
+    }
+#if DEBUG_MCTS
+    if (first) {
+      cout << "init : (" << first->GetAction().prev.x << "," <<
+        first->GetAction().prev.y << ") => (" <<
+        first->GetAction().next.x << "," <<
+        first->GetAction().next.y << ")" << endl;
+    }
+#endif
+    // Expand
+    pCur->Expand(currTurn);
+    selected = pCur->Selection(currTurn);
+    pCur = pCur->GetChild(selected);
+    
+    // Simulation
+    double value = Simulation(*pCur, currTurn == TURN_CHO ? TURN_HAN : TURN_CHO);
+    pCur->totalScore = value;
+
+    // Back Propagation
+    while (!visited.empty())
+    {
+      pCur = visited.top();
+      if (currTurn == TURN_CHO)
+        pCur->totalScore = min(rewards.top(), value);
+      else
+        pCur->totalScore = max(rewards.top(), value);
+
+      visited.pop();
+      rewards.pop();
+      currTurn = (currTurn == TURN_CHO ? TURN_HAN : TURN_CHO);
+    }
+  }
+  int bestNode = 0;
+  double bestValue;
+  if (turn == TURN_CHO) {
+    bestValue = -std::numeric_limits<double>::max();
+    for (int i = 0; i < rootNode.children.size(); i++) {
+      double value = rootNode.children[i].GetScore();
+      if (value > bestValue) {
+        bestValue = value;
+        bestNode = i;
+      }
+
+#if DEBUG_MCTS
+      double deb_score = rootNode.children[i].GetScore();
+      if (deb_score > 0 && deb_score < 0.001)
+        deb_score = 0.001;
+      else if (deb_score < 0 && deb_score > -0.001)
+        deb_score = -0.001;
+      else if (deb_score == 0)
+        deb_score = 0;
+
+
+      std::cout << "(" << rootNode.children[i].GetAction().prev.x << ", "
+        << rootNode.children[i].GetAction().prev.y << ") => ("
+        << rootNode.children[i].GetAction().next.x << ", "
+        << rootNode.children[i].GetAction().next.y << ") : "
+        << deb_score << endl;
+#endif
+    }
+  }
+  else {
+    bestValue = std::numeric_limits<double>::max();
+    for (int i = 0; i < rootNode.children.size(); i++) {
+      double value = rootNode.children[i].GetScore();
+      if (value < bestValue) {
+        bestValue = value;
+        bestNode = i;
+      }
+#if DEBUG_MCTS
+      double deb_score = rootNode.children[i].GetScore();
+      if (deb_score > 0 && deb_score < 0.001)
+        deb_score = 0.001;
+      else if (deb_score < 0 && deb_score > -0.001)
+        deb_score = -0.001;
+      else if (deb_score == 0)
+        deb_score = 0;
+
+
+      std::cout << "(" << rootNode.children[i].GetAction().prev.x << ", "
+        << rootNode.children[i].GetAction().prev.y << ") => ("
+        << rootNode.children[i].GetAction().next.x << ", "
+        << rootNode.children[i].GetAction().next.y << ") : "
+        << deb_score << endl;
+#endif
+    }
+  }
+  return rootNode.children[bestNode];
 }
 
+double Janggi::Simulation(Node curNode, Turn turn)
+{
+  Node s = Minmax(curNode, MCTS_SIMULATION_DEPTH, turn);
+  curNode.Init();
+  return s.GetValue();
+}
+
+void Janggi::PerformAction(Action a) {
+  rootNode.DoAction(a);
+}

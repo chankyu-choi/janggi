@@ -8,7 +8,13 @@
 
 using namespace std;
 
-#define MINMAX_DEPTH 6
+#define MINMAX_DEPTH 4
+#define ALPHA_BETA_DEPTH 6
+#define MCTS_ITERATION 300
+#define MCTS_SIMULATION_DEPTH 2
+
+
+const double EPSILON = 1e-6;
 
 const int     kStageWidth = 9;
 const int     kStageHeight = 10;

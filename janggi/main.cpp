@@ -17,11 +17,13 @@ void manualMode(Janggi& janggi);
 
 int main()
 {
+  srand(time(NULL));
+
   Janggi janggi;
   janggi.Print();
 
-  //autoMode(janggi);
-  man2Computer(janggi);
+  autoMode(janggi);
+  //man2Computer(janggi);
   //manualMode(janggi);
 
   return 1;
@@ -41,6 +43,13 @@ void autoMode(Janggi& janggi)
         cout << "calc time : " << duration << endl;
         janggi.PerformAction(action); //throws on error. use 'try-catch' to handle exception.
         janggi.Print();
+
+        printf("best : %d,%d -> %d,%d\n",
+          action.prev.x,
+          action.prev.y,
+          action.next.x,
+          action.next.y);
+
         turn = (turn == TURN_CHO ? TURN_HAN : TURN_CHO);
     } while(1);
 }

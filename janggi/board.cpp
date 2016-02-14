@@ -43,7 +43,7 @@ int Board::GetValue() {
     
     for (int y=0 ; y<kStageHeight ; y++) {
         for (int x=0 ; x<kStageWidth ; x++) {
-            int val = stage[y][x];
+            int val = stage[y][x];            
             if (val >= 0) {
                 if (val <= 6)
                     score_han += POINT[val];
@@ -51,8 +51,7 @@ int Board::GetValue() {
                     score_cho += POINT[val-7];
             }
         }
-    }
-    
+    }    
     return score_cho - score_han;
 }
 
